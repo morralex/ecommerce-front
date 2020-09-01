@@ -71,7 +71,8 @@ const AddCategory = () => {
     );
 
     return (
-        <Layout title='Add a new category' description={`Hi ${user.name}, ready to add a new category?`}>
+        <Layout title='Add a New Category' 
+        description={`Hi ${user.name}, ready to add a new category?`}>
             <div className="row">
                 <div className="col-8 offset-md-2">
                     {showSuccess()}
