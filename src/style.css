@@ -22,9 +22,13 @@
   * single product page - product name
   */
  
+.card-header {
+    background: teal;
+}
+  
  .name {
      background: indigo;
-     color: #fff;
+     /* color: #fff; */
      font-weight: bold;
  }
  
