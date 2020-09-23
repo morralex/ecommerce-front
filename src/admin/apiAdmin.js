@@ -48,3 +48,4 @@ export const getCategories = () => {
         })
         .catch(err => console(err))
 };
+
