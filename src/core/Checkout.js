@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
-import { getProducts, getBraintreeClientToken, processPayment } from './apiCore';
+import { getProducts, getBraintreeClientToken, processPayment, createOrder } from './apiCore';
 import { emptyCart } from './cartHelpers';
 import Card from './Card';
 import { isAuthenticated } from '../auth';
@@ -33,6 +33,10 @@ const Checkout = ({ products }) => {
     useEffect(() => {
         getToken(userId, token)
     }, []);
+
+    const handleAddress = event => {
+        setData({...data, adress: event.target.value})
+    };
 
     const getTotal = () => {
         return products.reduce((currentValue, nextValue) => {
@@ -74,14 +78,24 @@ const Checkout = ({ products }) => {
                 processPayment(userId, token, paymentData)
                     .then(response => {
                         // console.log(response)
-                        setData({ ...data, success: response.success });
-                        emptyCart(() => {
-                            console.log('payment success and empty cart')
-                            setData({ loading: false })
-                        })
                         // empty cart
                         // create order
-                        })
+
+
+                        const createOrderData = {
+                            products: products,
+                            transaction_id: response.transaction_id,
+                            amount: data.address
+                        }
+
+                        createOrder(userId, token, createOrderData)
+
+                        setData({ ...data, success: response.success });
+                        // emptyCart(() => {
+                        //     console.log('payment success and empty cart')
+                        //     setData({ loading: false })
+                        // });
+                    })
                     .catch(error => console.log(error))
             })
             .catch(error => {
@@ -94,6 +108,15 @@ const Checkout = ({ products }) => {
         <div onBlur={() => setData({ ...data, error: "" })}>
             {data.clientToken !== null && products.length > 0 ? (
                 <div>
+                    <div className="gorm-group mb-3">
+                        <label className="text-muted">Delivery Address:</label>
+                        <textarea 
+                            onChange={handleAddress}
+                            className="form-control"
+                            value={data.address}
+                            placeholder="Type your delivery adress here... "
+                        />
+                    </div>
                     <DropIn
                         options={{
                             authorization: data.clientToken,
